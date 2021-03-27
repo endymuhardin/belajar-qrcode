@@ -11,12 +11,24 @@ import java.io.File;
 
 public class GenerateQRCode {
     public static void main(String[] args) throws Exception {
-        String barcodeText = "https://software.endy.muhardin.com";
-        BufferedImage hasil = generateQRCodeImage(barcodeText);
-        String fileQrCode = "target/qrcode.jpg";
-        ImageIO.write(hasil, "jpg", new File(fileQrCode));
+        String productCode = "03";
+        String productionYear = "21";
+        Integer productNumberLength = 6;
+        String folderOutput = "target/qrcode/"+productCode;
+        new File(folderOutput).mkdirs();
+
+        for (int i = 1; i <= 2000; i++) {
+            String productNumber = productCode + productionYear
+                    + String.format("%1$" + productNumberLength + "s", i)
+                    .replace(' ', '0');
+            System.out.println("Generate QR Code for product number "+productNumber);
+            ImageIO.write(generateQRCodeImage(productNumber),
+                    "jpg",
+                    new File(folderOutput+File.separator
+                            +productNumber + ".jpg"));
+        }
     }
-    
+
     public static BufferedImage generateQRCodeImage(String barcodeText) throws Exception {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
