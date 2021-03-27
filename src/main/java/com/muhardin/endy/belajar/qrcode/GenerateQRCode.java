@@ -14,10 +14,12 @@ public class GenerateQRCode {
         String productCode = "03";
         String productionYear = "21";
         Integer productNumberLength = 6;
+        Integer productQuantity = 2000;
+
         String folderOutput = "target/qrcode/"+productCode;
         new File(folderOutput).mkdirs();
 
-        for (int i = 1; i <= 2000; i++) {
+        for (int i = 1; i <= productQuantity; i++) {
             String productNumber = productCode + productionYear
                     + String.format("%1$" + productNumberLength + "s", i)
                     .replace(' ', '0');
