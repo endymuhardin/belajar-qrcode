@@ -49,10 +49,10 @@ public class GenerateQRCode {
                         size, size, hints);
         BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
-        int startingYposition = size-10;
+        int startingYposition = size-2;
 
         Graphics2D g = (Graphics2D) qrCode.getGraphics();
-        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 22));
+        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 40));
         Color textColor = Color.BLACK;
         g.setColor(textColor);
         FontMetrics fm = g.getFontMetrics();
