@@ -14,7 +14,8 @@ Cara menggunakan :
 3. Compile dan jalankan aplikasinya
 
     ```
-    mvn clean compile exec:java -Dexec.mainClass="com.muhardin.endy.belajar.qrcode.GenerateQRCode"
+    mvn clean 
+    mvn compile exec:java -Dexec.mainClass="com.muhardin.endy.belajar.qrcode.GenerateQRCode"
     ```
 
 4. QR Code ada di folder `target/qrcode`
