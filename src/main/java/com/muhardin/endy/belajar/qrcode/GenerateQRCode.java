@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class GenerateQRCode {
     public static void main(String[] args) throws Exception {
+        Integer qrCodeSize = 300;
         String logoPath = "src/main/resources/logo.png";
         String productCode = "01";
         String productionYear = "21";
@@ -30,7 +31,7 @@ public class GenerateQRCode {
                     + String.format("%1$" + productNumberLength + "s", i)
                     .replace(' ', '0');
             System.out.println("Generate QR Code for product number "+productNumber);
-            BufferedImage qrCode = generateQRCodeImage(productNumber);
+            BufferedImage qrCode = generateQRCodeImage(productNumber, qrCodeSize);
             BufferedImage qrWithLogo = pasangLogo(qrCode, logoPath);
             ImageIO.write(qrWithLogo, "png",
                     new File(folderOutput+File.separator
@@ -38,15 +39,25 @@ public class GenerateQRCode {
         }
     }
 
-    public static BufferedImage generateQRCodeImage(String barcodeText) throws Exception {
+    public static BufferedImage generateQRCodeImage(String barcodeText, Integer size) throws Exception {
         Map<EncodeHintType, ErrorCorrectionLevel> hints = new HashMap<>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
                 barcodeWriter.encode(barcodeText,
                         BarcodeFormat.QR_CODE,
-                        300, 300, hints);
-        return MatrixToImageWriter.toBufferedImage(bitMatrix);
+                        size, size, hints);
+        BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(bitMatrix);
+
+        int startingYposition = size-10;
+
+        Graphics2D g = (Graphics2D) qrCode.getGraphics();
+        g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 22));
+        Color textColor = Color.BLACK;
+        g.setColor(textColor);
+        FontMetrics fm = g.getFontMetrics();
+        g.drawString(barcodeText, (qrCode.getWidth() / 2)   - (fm.stringWidth(barcodeText) / 2), startingYposition);
+        return qrCode;
     }
 
     public static BufferedImage pasangLogo(BufferedImage qrImage, String logoPath) throws Exception {
