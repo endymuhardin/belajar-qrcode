@@ -15,28 +15,48 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GenerateQRCode {
-    public static void main(String[] args) throws Exception {
-        Integer qrCodeSize = 300;
-        String logoPath = "src/main/resources/logo.png";
-        String productCode = "01";
-        String productionYear = "21";
-        Integer productNumberLength = 6;
-        Integer productQuantity = 1;
 
-        String folderOutput = "target/qrcode/"+productCode;
+    private static final String logoPath = "src/main/resources/logo.png";
+    private static final Integer productNumberLength = 6;
+    private static final Integer productCodeLength = 2;
+    private static final Integer qrCodeSize = 300;
+
+    public static void main(String[] args) throws Exception {
+        
+        Integer productCodesQty = 20;
+        String productionYear = "22";
+        Integer productQuantity = 10000;
+
+        for(int i = 0; i<productCodesQty; i++){
+            generateQrForProduct(productionYear, i+1, productQuantity);
+        }
+    }
+
+    public static void generateQrForProduct(
+            String productionYear, Integer productCode, Integer productQuantity)
+            throws Exception {
+        
+        String strProductCode = String
+                                .format("%1$" + productCodeLength + "s", productCode)
+                                .replace(' ', '0');
+
+        System.out.println("--- Generating QR Code for Product Code "+strProductCode+" ---");
+
+        String folderOutput = "target/qrcode/"+strProductCode;
         new File(folderOutput).mkdirs();
 
         for (int i = 1; i <= productQuantity; i++) {
-            String productNumber = productCode + productionYear
-                    + String.format("%1$" + productNumberLength + "s", i)
-                    .replace(' ', '0');
-            System.out.println("Generate QR Code for product number "+productNumber);
-            BufferedImage qrCode = generateQRCodeImage(productNumber, qrCodeSize);
-            BufferedImage qrWithLogo = pasangLogo(qrCode, logoPath);
-            ImageIO.write(qrWithLogo, "png",
-                    new File(folderOutput+File.separator
-                            +productNumber + ".png"));
+                String productNumber = strProductCode + productionYear
+                        + String.format("%1$" + productNumberLength + "s", i)
+                        .replace(' ', '0');
+                System.out.println("Generate QR Code for product number "+productNumber);
+                BufferedImage qrCode = generateQRCodeImage(productNumber, qrCodeSize);
+                BufferedImage qrWithLogo = pasangLogo(qrCode, logoPath);
+                ImageIO.write(qrWithLogo, "png",
+                        new File(folderOutput+File.separator
+                                +productNumber + ".png"));
         }
+        
     }
 
     public static BufferedImage generateQRCodeImage(String barcodeText, Integer size) throws Exception {
@@ -44,7 +64,7 @@ public class GenerateQRCode {
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix =
-                barcodeWriter.encode(barcodeText,
+                barcodeWriter.encode("QBNGold "+barcodeText,
                         BarcodeFormat.QR_CODE,
                         size, size, hints);
         BufferedImage qrCode = MatrixToImageWriter.toBufferedImage(bitMatrix);
